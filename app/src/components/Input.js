@@ -1,9 +1,15 @@
 import React, { Fragment } from "react";
 
-function Input() {
+function Input(props) {
   return (
     <Fragment>
-      <input placeholder="I am an input." />
+      <input
+        placeholder={props.placeholder}
+        onChange={props.onChange}
+        name={props.name}
+        type={props.type}
+        value={props.value}
+      />
     </Fragment>
   );
 }

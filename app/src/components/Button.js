@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 
-function Button() {
+function Button(props) {
   return (
     <Fragment>
-      <button>I am a button.</button>
+      <button type={props.type} onClick={props.onClick}>{props.label}</button>
     </Fragment>
   );
 }
