@@ -13,23 +13,25 @@ const useForm = (callback, validator) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isEmpty(errors) && isSubmitting) {
-      callback();
-    }
-  }, [errors]);
+    if(isSubmitting) setErrors(validator(values));
+  }, [values]);
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     setIsSubmitting(true);
-    setErrors(validator(values));
+
+    const validatedErrors = validator(values);
+    setErrors(validatedErrors);
+    
+    if (isEmpty(validatedErrors) && isSubmitting) {
+      callback();
+    }
   };
 
   const handleChange = (e) => {
     if (e) e.persist();
     const { name, value } = e.target;
-    setValues((prevState) => ({ ...prevState, [name]: value }));
-
-    if(isSubmitting) setErrors(validator(values));  
+    setValues((prevState) => ({ ...prevState, [name]: value }));  
   };
 
   return {
