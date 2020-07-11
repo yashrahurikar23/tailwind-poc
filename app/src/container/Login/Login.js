@@ -5,9 +5,11 @@ import Input from "../../components/Input";
 import Link from "../../components/Link";
 // Hooks
 import useForm from "../../hooks/useForm";
+// Utilities
+import { validateLoginForm } from "../../utils/validators";
 
 function Login() {
-  const { values, handleChange, handleSubmit } = useForm(login);
+  const { values, errors, handleChange, handleSubmit } = useForm(login, validateLoginForm);
   const [loading, setLoading] = useState(false);
 
   function login() {
@@ -19,7 +21,7 @@ function Login() {
     }, 5000);
   };
 
-  console.log("values", values);
+  console.log("values", values, errors);
 
   return (
     <Fragment>
@@ -38,7 +40,7 @@ function Login() {
             labelClass=""
             className=""
             disabled={loading}
-            errorMessage=""
+            errorMessage={errors.username}
             value={values.username || ""}
             onChange={handleChange}
           />
@@ -53,7 +55,7 @@ function Login() {
             labelClass=""
             className=""
             disabled={loading}
-            errorMessage=""
+            errorMessage={errors.password}
             value={values.password || ""}
             onChange={handleChange}
           />
