@@ -3,65 +3,32 @@ import React, { Fragment, useState } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Link from "../../components/Link";
-
-const initialFormState = {
-  username: "",
-  password: "",
-  errorMap: ["username", "password"],
-};
+// Hooks
+import useForm from "../../hooks/useForm";
+// Utilities
+import { validateLoginForm } from "../../utils/validators";
 
 function Login() {
-  const [formState, setFormState] = useState(initialFormState);
+  const { values, errors, handleChange, handleSubmit } = useForm(login, validateLoginForm);
   const [loading, setLoading] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState(false);
-  // Event handlers
-  const _handleInputChange = (e) => {
-    if (e) e.persist();
-    const { name, value } = e.target;
 
-    if (!value) {
-      setFormState((prevState) => ({
-        ...prevState,
-        [name]: value,
-        errorMap: [...formState.errorMap, name],
-      }));
-    } else {
-      setFormState((prevState) => ({
-        ...prevState,
-        [name]: value,
-        errorMap:
-          formState.errorMap.length !== 0 // Only run the filter if the errorMap has anything in it
-            ? formState.errorMap.filter((field) => field !== name)
-            : formState.errorMap,
-      }));
-    }
-  };
-
-  const _handleFormSubmit = (e) => {
-    if (e) e.preventDefault();
-    setSubmissionStatus(true);
-    
-    // If the 
-    if (formState.errorMap.length !== 0) {
-      return false;
-    }
-
+  function login() {
+    console.log("login");
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      setSubmissionStatus(false);
     }, 5000);
   };
 
-  console.log("FormState", formState);
+  console.log("values", values, errors);
 
   return (
     <Fragment>
       <div class="w-full h-screen flex items-center justify-center text-left">
         <form
           class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          onSubmit={_handleFormSubmit}
+          onSubmit={handleSubmit}
         >
           <Input
             placeholder="Enter your username"
@@ -73,11 +40,9 @@ function Login() {
             labelClass=""
             className=""
             disabled={loading}
-            errorMessage={
-              !formState.username && submissionStatus ? "Field is required" : ""
-            }
-            value={formState.username}
-            onChange={_handleInputChange}
+            errorMessage={errors.username}
+            value={values.username || ""}
+            onChange={handleChange}
           />
 
           <Input
@@ -90,13 +55,9 @@ function Login() {
             labelClass=""
             className=""
             disabled={loading}
-            errorMessage={
-              !formState.password && submissionStatus
-                ? "Field is required."
-                : ""
-            }
-            value={formState.password}
-            onChange={_handleInputChange}
+            errorMessage={errors.password}
+            value={values.password || ""}
+            onChange={handleChange}
           />
 
           <div class="flex items-center justify-between">
@@ -104,7 +65,7 @@ function Login() {
               label="Login"
               type="submit"
               className=""
-              onClick={_handleFormSubmit}
+              onClick={handleSubmit}
               loading={loading}
               loadingBtnClass=""
             />
