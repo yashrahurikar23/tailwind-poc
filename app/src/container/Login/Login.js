@@ -7,23 +7,50 @@ import Link from "../../components/Link";
 const initialFormState = {
   username: "",
   password: "",
+  errorMap: ["username", "password"],
 };
 
 function Login() {
   const [formState, setFormState] = useState(initialFormState);
   const [loading, setLoading] = useState(false);
-
+  const [submissionStatus, setSubmissionStatus] = useState(false);
   // Event handlers
   const _handleInputChange = (e) => {
+    if (e) e.persist();
     const { name, value } = e.target;
-    setFormState((prevState) => ({ ...prevState, [name]: value }));
+
+    if (!value) {
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: value,
+        errorMap: [...formState.errorMap, name],
+      }));
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: value,
+        errorMap:
+          formState.errorMap.length !== 0 // Only run the filter if the errorMap has anything in it
+            ? formState.errorMap.filter((field) => field !== name)
+            : formState.errorMap,
+      }));
+    }
   };
 
   const _handleFormSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    setSubmissionStatus(true);
+    
+    // If the 
+    if (formState.errorMap.length !== 0) {
+      return false;
+    }
+
     setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
+      setSubmissionStatus(false);
     }, 5000);
   };
 
@@ -32,7 +59,10 @@ function Login() {
   return (
     <Fragment>
       <div class="w-full h-screen flex items-center justify-center text-left">
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={_handleFormSubmit}>
+        <form
+          class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          onSubmit={_handleFormSubmit}
+        >
           <Input
             placeholder="Enter your username"
             name="username"
@@ -42,6 +72,10 @@ function Login() {
             divClass="mb-4"
             labelClass=""
             className=""
+            disabled={loading}
+            errorMessage={
+              !formState.username && submissionStatus ? "Field is required" : ""
+            }
             value={formState.username}
             onChange={_handleInputChange}
           />
@@ -55,6 +89,12 @@ function Login() {
             divClass="mb-6"
             labelClass=""
             className=""
+            disabled={loading}
+            errorMessage={
+              !formState.password && submissionStatus
+                ? "Field is required."
+                : ""
+            }
             value={formState.password}
             onChange={_handleInputChange}
           />

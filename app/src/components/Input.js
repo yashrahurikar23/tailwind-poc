@@ -20,6 +20,7 @@ function Input(props) {
           name={props.name}
           type={props.type}
           value={props.value || ""}
+          disabled={props.disabled}
           className={
             props.inputClass ||
             "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -38,6 +39,7 @@ Input.propTypes = {
   label: PropTypes.string,
   labelClass: PropTypes.string,
   for: PropTypes.string,
+  disabled: PropTypes.bool,
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
   name: PropTypes.string,
